@@ -1,6 +1,6 @@
-service: my-store-app
+service: tp-serverless-cloudfront-store-app-2
 
-frameworkVersion: "3"
+frameworkVersion: '3'
 
 provider:
   name: aws
@@ -19,7 +19,7 @@ plugins:
 
 custom:
   client:
-    bucketName: my-store-app
+    bucketName: tp-serverless-cloudfront-store-app-2
     distributionFolder: dist
   s3BucketName: ${self:custom.client.bucketName}
 
@@ -36,14 +36,18 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.s3BucketName}
-        AccessControl: PublicRead
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: index.html
+        OwnershipControls:
+          Rules:
+            - ObjectOwnership: ObjectWriter
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
         # VersioningConfiguration:
         #   Status: Enabled
 
-    ## Specifying the policies to make sure all files inside the Bucket are avaialble to CloudFront
+    ## Specifying the policies to make sure all files inside the Bucket are available to CloudFront
     WebAppS3BucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
@@ -51,15 +55,15 @@ resources:
           Ref: WebAppS3Bucket
         PolicyDocument:
           Statement:
-            - Sid: "AllowCloudFrontAccessIdentity"
+            - Sid: 'AllowCloudFrontAccessIdentity'
               Effect: Allow
               Action: s3:GetObject
               Resource: arn:aws:s3:::${self:custom.s3BucketName}/*
               Principal:
                 AWS:
                   Fn::Join:
-                    - " "
-                    - - "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity"
+                    - ' '
+                    - - 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity'
                       - !Ref OriginAccessIdentity
 
     OriginAccessIdentity:
@@ -98,8 +102,8 @@ resources:
               ResponseCode: 200
               ResponsePagePath: /index.html
           DefaultCacheBehavior:
-            AllowedMethods: ["GET", "HEAD", "OPTIONS"]
-            CachedMethods: ["GET", "HEAD", "OPTIONS"]
+            AllowedMethods: ['GET', 'HEAD', 'OPTIONS']
+            CachedMethods: ['GET', 'HEAD', 'OPTIONS']
             ForwardedValues:
               Headers:
                 - Access-Control-Request-Headers
