@@ -1,6 +1,6 @@
 # React-shop-cloudfront
 
-## Manual Deployment
+## Manual Deployment - Inactive
 
 S3 Bucket: https://tp-shop-react-redux-cloudfront.s3.eu-north-1.amazonaws.com/index.html
 CloudFront distribution: https://d3g3dp5o6dbn94.cloudfront.net
